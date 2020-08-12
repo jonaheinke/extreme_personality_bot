@@ -139,13 +139,21 @@ def help(update, context):
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
 with open("token.txt") as f:
-	updater = Updater(f.readline(), persistence = PicklePersistence("persistence.p"), use_context = True)
+	token = f.readline()
+
+if token:
+	updater = Updater(token, persistence = PicklePersistence("persistence.p"), use_context = True)
+else:
+	print("Du solltest in eine Datei mit dem Namen \"token.txt\" deinen Telegram-Bot-Token legen.")
+	exit()
 
 updater.dispatcher.add_handler(CommandHandler("start", start))
 updater.dispatcher.add_handler(CallbackQueryHandler(keyboardquery))
 updater.dispatcher.add_handler(InlineQueryHandler(inlinequery))
 updater.dispatcher.add_handler(CommandHandler("settings", settings))
 updater.dispatcher.add_handler(CommandHandler("help", help))
+
+updater.dispatcher.add_handler(CommandHandler("reload_text_lines", settings))
 
 print("Ready!")
 
