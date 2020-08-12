@@ -1,0 +1,33 @@
+{
+	"start": {
+		"title": "Willkommensnachricht",
+		"continue": "Weiter ➤"
+	},
+	"questions": [
+		{
+			"title": "Frage 1",
+			"options": [["Option 1"], ["Option 2"], ["Option 3"], ["Option 4"], ["Option 5"], ["Option 6"], ["Option 7"], ["Option 8"]]
+		},
+		{
+			"title": "Frage 2",
+			"options": [["0", "1", "2", "3", "4", "5"]]
+		},
+		{
+			"title": "Frage 3",
+			"options": [["Option 9", "Option /", "Option 11", "mehrzeilige Optionen könnten\näußerst praktisch sein", "äußerst lange Option, die höchstwahrscheinlich abgeschnitten wird"]]
+		},
+		{
+		"title": "Frage 4",
+			"options": [["cool.io", "ok.com"]]
+		}
+	],
+	"end": {
+		"title": "Danke für die Teilnahme!",
+		"share": ""
+	},
+	"settings": {
+		"title": "Hier kann man Dinge einstellen.",
+		"options": ["", "", ""]
+	},
+	"help": "Hilfeseite & Datenschutzerklärung\n\nTippe /settings, um sämtliche Datenschutzeinstellungen zu ändern."
+}
