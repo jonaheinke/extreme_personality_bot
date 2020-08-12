@@ -1,13 +1,5 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Telegram Bot Token
-token.txt
+# Telegram Bot Token & Control Whitelist
+config.json
 
 # Telegram Bot Persistence
 persistence.p
