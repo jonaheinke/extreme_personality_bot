@@ -29,22 +29,31 @@ with open("text_lines.json", encoding = "utf-8-sig") as f:
 '''
 	Exemplary Data Structure:
 	{
-		473: [
-			{
-				"date": <dt_obj>,
-				"portions": [0.6, 0.382, ...]
-			}
-		],
+		2324: {
+			"delete": 60,
+			"results": [
+				{
+					"dt": <dt_obj>,
+					"portions": [0.6, 0.382, ...]
+				},
+				...
+			]
+		},
 		...
 	}
 '''
 #TODO: muss persistent gemacht werden
 results = {}
 
-#list.append und list.extend sind multithreading-safe
+#dict Lesen und Schreiben sowie list.append und list.extend sind multithreading-safe
 @run_async #Ist der Decorator hier überhaupt relevant?
 def calculate_results():
-	pass
+	userid = 2374
+
+	if userid not in results:
+		results[userid] = {"delete": 60, "results": []}
+	
+	results[userid]["results"].append({"dt": datetime.now(), "portions": []})
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 #                                                           Telegram-Bot Befehle                                                           #
@@ -76,7 +85,7 @@ def show_results(update, context):
 def show_saved_data(update, context):
 	context.bot.send_message(update.effective_chat.id, json.dumps(results[update.effective_chat.id], ensure_ascii = False, indent = 4))
 
-def delete_results(update, context):
+def delete_saved_data(update, context):
 	pass
 
 @run_async
@@ -113,16 +122,12 @@ def inlinequery(update, context):
 	print("Received Inline Query from <{}> in Chat <{}> with query <{}>".format(update.inline_query.from_user.username, 1, update.inline_query.query))
 	if update.inline_query.query == "share" and True: #TODO: username in [...]
 		#update.inline_query.answer([InlineQueryResultCachedPhoto(update.inline_query.id, uuid4(), "@" + update.inline_query.from_user.username + "'s Ergebnisse")], 30, True, None, "Test machen ➤", "cool")
-		mc = InputTextMessageContent("Beschreibung")
-		print("Checkpoint 1")
 		id = uuid4().hex
 		print(id)
-		result = [InlineQueryResultArticle(id, "@" + update.inline_query.from_user.username + "'s Ergebnisse", mc)]
-		print("Checkpoint 2")
+		result = [InlineQueryResultArticle(id, "@" + update.inline_query.from_user.username + "'s Ergebnisse", InputTextMessageContent("Beschreibung"))]
 		update.inline_query.answer(result, 600, True) #https://python-telegram-bot.readthedocs.io/en/stable/telegram.bot.html#telegram.Bot.answer_inline_query
-		print("POST IMAGE")
 	else:
-		update.inline_query.answer([], 30, True, None, "Test machen ➤", "cool") #parameter: only [A-Za-z0-9_-] and len in 1-64
+		update.inline_query.answer([], 30, True, None, "Test machen ➤", "a") #parameter: only [A-Za-z0-9_-] and len in 1-64
 
 @run_async
 def settings(update, context):
@@ -138,13 +143,15 @@ def help(update, context):
 #                                                         Starten des Telegram-Bots                                                        #
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
-with open("token.txt") as f:
-	token = f.readline()
+with open("config.json") as f:
+	json_raw = json.load(f)
+	token = json_raw["token"]
+	whitelist = json_raw["whitelist"]
 
 if token:
 	updater = Updater(token, persistence = PicklePersistence("persistence.p"), use_context = True)
 else:
-	print("Du solltest in eine Datei mit dem Namen \"token.txt\" deinen Telegram-Bot-Token legen.")
+	print("Du solltest in die Datei \"config.json\" deinen Telegram-Bot-Token legen.")
 	exit()
 
 updater.dispatcher.add_handler(CommandHandler("start", start))
